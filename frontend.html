@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encryption & Decryption Tool</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="backend.go"></script>
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Encryption & Decryption Tool</h2>
+    <textarea id="inputText" placeholder="Enter text to encrypt/decrypt..."></textarea>
+    <br>
+    <label for="algorithm">Select Operation:</label>
+    <select id="algorithm">
+      <option value="aes">Encrypt</option>
+      <option value="decrypt_aes">Decrypt</option>
+    </select>
+    <br><br>
+    <label for="key">Enter Encryption/Decryption Key:</label>
+    <input type="text" id="key" placeholder="Encryption/Decryption key...">
+    <br><br>
+    <button onclick="encryptDecrypt()">Submit</button>
+    <div class="output" id="outputText"></div>
+  </div>
+
+  <script>
+    function encryptDecrypt() {
+      var inputText = document.getElementById('inputText').value.trim();
+      var algorithm = document.getElementById('algorithm').value;
+      var key = document.getElementById('key').value.trim();
+
+      if (!inputText || !key) {
+        alert('Please enter text and encryption/decryption key.');
+        return;
+      }
+
+      var formData = new FormData();
+      formData.append('text', inputText);
+      formData.append('key', key);
+      formData.append('algorithm', algorithm);
+
+      fetch('/encrypt-decrypt', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('outputText').textContent = data;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      });
+    }
+  </script>
+</body>
+</html>
